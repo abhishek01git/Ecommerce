@@ -1,0 +1,63 @@
+<%- include("../partials/user/header") %>
+
+<style>
+    .login__section--inner {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+</style>
+
+<div class="container">
+    <div class="login__section--inner">
+        <div class="col">
+            <div class="account__login">
+                <div class="account__login--header mb-25">
+                    <h2 class="account__login--header__title h3 mb-10">Login</h2>
+                    <p class="account__login--header__desc">Login if you are a returning customer.</p>
+                </div>
+                <div class="account__login--inner">
+                    <!-- Form starts here -->
+                    <form action="/login" method="POST">
+                        <input class="account__login--input" name="email" placeholder="Email Address" type="text" required>
+                        <input class="account__login--input" name="password" placeholder="Password" type="password" required>
+                        
+                        <% if (locals.message && message.length > 0) { %>
+                            <div class="alert alert-danger text-center">
+                                <%= message %>
+                            </div>
+                        <% } %>
+                        
+                        <div class="account__login--remember__forgot mb-15 d-flex justify-content-between align-items-center">
+                            <div class="account__login--remember position__relative">
+                                <input class="checkout__checkbox--input" id="check1" type="checkbox">
+                                <span class="checkout__checkbox--checkmark"></span>
+                                <label class="checkout__checkbox--label login__remember--label" for="check1">
+                                    Remember me
+                                </label>
+                            </div>
+                            <a href="/forgot-password" class="account__login--forgot" type="button">Forgot Your Password?</a>
+                        </div>
+                        <button class="account__login--btn primary__btn" type="submit">Login</button>
+                    </form>
+                    <!-- Form ends here -->
+                    
+                    <div class="account__login--divide">
+                        <span class="account__login--divide__text">OR</span>
+                    </div>
+                    <div class="account__social d-flex justify-content-center mb-15">
+                        <a class="account__social--link google" target="_blank" href="/auth/google">Google</a>
+                    </div>
+                    <p class="account__login--signup__text">
+                        Don’t Have an Account? 
+                        <a href="/signup">Sign up now</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include("../partials/user/footer") %>
