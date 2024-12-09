@@ -227,9 +227,9 @@
                             <form action="#">
                                 <h2 class="product__details--info__title mb-15"><%=product.productName%></h2>
                                 <div class="product__details--info__price mb-10">
-                                    <span class="current__price">$<%=product.salePrice%></span>
+                                    <span class="current__price">Rs:<%=product.salePrice%></span>
                                     <!-- <span class="price__divided"></span> -->
-                                    <span class="old__price"><%product.regularPrice%></span>
+                                    <span class="old__price">Rs:<%= product.regularPrice || 'N/A' %></span>
                                 </div>
                                 <div class="product__details--info__rating d-flex align-items-center mb-15">
                                     <ul class="rating d-flex justify-content-center">

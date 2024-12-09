@@ -1,24 +1,33 @@
 const User = require('../models/userSchema');
 
-const checkUserBlocked=async(req,res,next)=>{
+const checkUserBlocked = async (req, res, next) => {
     try {
-        
-        const userId = req.session.user;
-        const user = await User.findById(userId);
-           
-        if(user && user.isBlocked){
-            return res.redirect('/login');
+       
+        const publicRoutes = ['/login', '/signup', '/auth/google', '/auth/google/callback'];
 
+        if (publicRoutes.includes(req.path)) {
+            return next(); 
         }
-        next()
 
+     
+        if (!req.session.user) {
+            return next();
+        }
+
+        
+        const user = await User.findById(req.session.user);
+
+       
+        if (user && user.isBlocked) {
+            req.session.destroy(); 
+            return res.redirect('/login');
+        }
+
+        next(); 
     } catch (error) {
-        console.log(error);
-        // res.redirect('/pageNotFound');
-        
-
-        
+        console.error('Error in checkUserBlocked middleware:', error);
+        res.status(500).send('Internal Server Error'); 
     }
-}
+};
 
-module.exports=checkUserBlocked;
+module.exports = checkUserBlocked;

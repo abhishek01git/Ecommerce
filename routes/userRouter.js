@@ -4,38 +4,42 @@ const userController = require('../controllers/user/userController'); // Adjust 
 const { userAuth } = require('../middlewares/auth');  // Ensure userAuth middleware is properly implemented
 const passport = require('passport');
 const productController=require('../controllers/user/productController')
+const blocker=require('../middlewares/block');
+const { block } = require('sharp');
+const User=require('../models/userSchema')
 
 
-// Home page route
-router.get('/', userController.loadHomepage);
 
-// Signup routes
+
+router.use((req, res, next) => {if (['/login', '/signup', '/auth/google', '/auth/google/callback'].includes(req.path)) {return next();  } blocker(req, res, next);});
+router.get('/', blocker,userController.loadHomepage);
 router.get('/signup', userController.loadingSignup);  
 router.post('/signup', userController.signup);        
-
-// OTP verification routes
 router.post('/verify-otp', userController.verifyOtp);   
 router.post('/resend-otp', userController.resendOtp);   
-
-// Login routes
 router.get('/login', userController.loadLogin);         
 router.post('/login', userController.login);            
-
-// Logout route
 router.get('/logout', userAuth, userController.logout); 
-
-// Page Not Found
 router.get('/pageNotFound', userController.pageNotFound); 
-
-
-// Route to initiate Google OAuth
 router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-
-// Callback route for Google OAuth
-router.get('/auth/google/callback',passport.authenticate('google', { failureRedirect: '/signup' }),(req, res) => {res.redirect('/');  });
-
-router.get('/productDetails',productController.productDetails);
-
+router.get('/auth/google/callback',passport.authenticate('google', { failureRedirect: '/signup' }), async( req, res) => {
+    try {
+      const user=req.session.passport.user;
+      const userData=await User.findOne({_id:user,isBlocked:false})  
+      if(userData){
+        return  res.redirect('/'); 
+      }
+      req.session.destroy();
+      return res.redirect('/login?message=user is blocked')
+    } catch (error) {
+        console.log('passport error',error);
+        res.redirect('pageNoteFound')
+    }
+    
+   
+ });
+router.get('/productDetails',blocker,productController.productDetails);
+router.get('/shop',blocker,productController.shopLoad);
 
 
 

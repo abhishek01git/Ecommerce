@@ -11,25 +11,25 @@ const pageError=(req,res)=>{
 }
 
 
-// Load login page
+
 const Loadlogin = (req, res) => {
   if (req.session.admin) {
-    return res.redirect('/admin/dashboard');  // Redirect to dashboard if already logged in
+    return res.redirect('/admin/dashboard');  
   }
   res.render('admin login', { message: null });
 };
 
-// Handle login request
+
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const admin = await User.findOne({ email, isAdmin: true });  // Ensure 'isAdmin' is true in schema
+    const admin = await User.findOne({ email, isAdmin: true });  
 
     if (admin) {
-      const passwordMatch = await bcrypt.compare(password, admin.password); // Compare hashed password
+      const passwordMatch = await bcrypt.compare(password, admin.password); 
       if (passwordMatch) {
-        req.session.admin = true;  // Store session for admin
-        return res.redirect('/admin/dashboard');  // Redirect to dashboard
+        req.session.admin = true; 
+        return res.redirect('/admin/dashboard');  
       } else {
         return res.render('admin login', { message: 'Incorrect password, please try again.' });
       }
@@ -38,37 +38,37 @@ const login = async (req, res) => {
     }
   } catch (error) {
     console.log('Login error', error);
-    return res.redirect('/pageError');  // Handle error and redirect to error page
+    return res.redirect('/pageError');  
   }
 };
 
-// Load the dashboard page for admin
+
 const loadDashboard = async (req, res) => {
   if (req.session.admin) {
     try {
-      res.render('dashboard');  // Render dashboard if admin is logged in
+      res.render('dashboard');  
     } catch (error) {
-      res.redirect('/pageError');  // Redirect to error page if something goes wrong
+      res.redirect('/pageError');  
     }
   } else {
-    res.redirect('/admin/login');  // Redirect to login if not logged in
+    res.redirect('/admin/login'); 
   }
 };
 
 
 const logout = (req, res) => {
   try {
-      if (req.session.admin) { // Check specifically for admin session
+      if (req.session.admin) { 
           req.session.destroy((err) => {
               if (err) {
                   console.log('Error destroying admin session:', err);
-                  return res.redirect('/pageError'); // Redirect to a generic error page
+                  return res.redirect('/pageError'); 
               }
-              return res.redirect('/admin/login'); // Redirect to admin login
+              return res.redirect('/admin/login'); 
           });
       } else {
           console.log('No admin session found.');
-          return res.redirect('/admin/login'); // Redirect to admin login even if no session exists
+          return res.redirect('/admin/login'); 
       }
   } catch (error) {
       console.log('Unexpected error during admin logout:', error);

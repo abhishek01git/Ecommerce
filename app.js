@@ -6,7 +6,7 @@ const userRoute=require('./routes/userRouter')
 const session=require('express-session')
 const passport=require('./config/passport')
 const adminRouter=require('./routes/adminRouter')
-const checkUserBlocked=require('./middlewares/block')
+
 
 const app=express();
 
@@ -25,10 +25,10 @@ app.use(session({
   }
 }))
 
-app.use(checkUserBlocked)
 app.use(passport.initialize());
 app.use(passport.session());
 app.use('/uploads', express.static('uploads'));
+
 
 
 app.use((req,res,next)=>{

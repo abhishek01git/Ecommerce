@@ -108,38 +108,38 @@ const editCategory = async (req, res) => {
         const id = req.params.id;
         const { categoryname, description } = req.body;
        console.log(categoryname,description)
-        // Validation checks
+      
         if (!categoryname || !description) {
             return res.status(400).json({ error: 'Category name and description are required' });
         }
 
-        // Check if category name already exists (excluding the current category)
+        
         const existingCategory = await Category.findOne({ name: categoryname, _id: { $ne: id } });
         if (existingCategory) {
             return res.status(400).json({ error: 'Category with this name already exists' });
         }
 
-        // Prepare updated data
+       
         const updatedData = {
             name: categoryname,
             description,
         };
 
-        // If a new image is uploaded, include it in the update
+        
         if (req.file) {
-            updatedData.image = req.file.filename; // Assuming multer saves the filename
+            updatedData.image = req.file.filename; 
         }
 
-        // Update the category in the database
+       
         const updateCategory = await Category.findByIdAndUpdate(id, updatedData, { new: true });
 
         if (updateCategory) {
-            res.redirect('/admin/category'); // Redirect to the category list
+            res.redirect('/admin/category'); 
         } else {
             res.status(404).json({ error: "Category not found" });
         }
     } catch (error) {
-        console.error(error); // For debugging purposes
+        console.error(error); 
         res.status(500).json({ error: "Internal server error" });
     }
 };

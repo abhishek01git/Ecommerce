@@ -16,7 +16,7 @@ const loadHomepage = async (req, res) => {
     //console.log('this is after passport',req.session)
 
     const category=await Category.find({isListed:true});
-   // console.log("category",category);
+  //  console.log("category",category);
     
     let productData=await Product.find({isBlocked:false,category:{$in:category.map(category=>category._id)},quantity:{$gt:0}})
   productData.sort((a,b)=>new Date(b.createdOn)-new Date(a.createdOn));
@@ -198,6 +198,12 @@ const resendOtp = async (req, res) => {
 const loadLogin=async (req,res)=>{
 try {
   if(!req.session.user){
+    if(req.query.message==="user is blocked"){
+      const message=req.query.message;
+      return res.render('login',{message})
+
+    }
+    
     return res.render('login')
   }else{
     res.redirect('/')
@@ -246,11 +252,11 @@ const login = async (req, res) => {
 
 const logout = async (req, res) => {
   try {
-    req.session.destroy(); // Destroy the session
-    res.redirect('/login'); // Redirect to login
+    req.session.destroy(); 
+    res.redirect('/login'); 
   } catch (error) {
     console.error('Logout error:', error.message);
-    res.redirect('/pageNotFound'); // Redirect to a generic error page on failure
+    res.redirect('/pageNotFound'); 
   }
 };
 

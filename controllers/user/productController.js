@@ -16,7 +16,7 @@ const productDetails = async (req, res) => {
 
        if (!productId) {
            console.error("Product ID is missing from request.");
-           return res.redirect('/pageNotFound'); // Handle missing product ID gracefully
+           return res.redirect('/pageNotFound'); 
        }
 
        const product = await Product.findById(productId).populate('category');
@@ -25,7 +25,7 @@ const productDetails = async (req, res) => {
 
        if (!product) {
            console.error(`Product with ID ${productId} not found.`);
-           return res.redirect('/pageNotFound'); // Handle non-existent product
+           return res.redirect('/pageNotFound'); 
        }
         
        const findCategory =  product.category;
@@ -46,5 +46,20 @@ const productDetails = async (req, res) => {
        res.redirect('/pageNotFound');
    }
 };
+const shopLoad = async (req, res) => {
+   try {
 
-module.exports = { productDetails };
+
+       const products = await Product.find({isBlocked:false});
+
+       res.render('shope', {
+           products: products
+       });
+   } catch (error) {
+       console.error("Error in productDetails:", error);
+   }
+};
+
+
+
+module.exports = { productDetails,shopLoad };

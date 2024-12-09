@@ -28,30 +28,27 @@ const ProductSchema = new Schema(
       type: Number,
       default: 0,
     },
-    quantity: {
-      type: Number,
-      default: 0,
-    },
-    size: {
-      type: String,
-      enum: ["S", "M", "L", "XL", "XXL"],
-      required: true,
-    },
+    // quantity: {
+    //   type: Number,
+    //   default: 0,
+    // },
 
-    productImage: {
-      type: [String],
-      required: true,
-    },
+    size: [{
+      size: { type: String, required: true },  
+      quantity: { type: Number, required: true }  
+  }],
+
+  productImage: [{ type: String }],
     isBlocked: {
       type: Boolean,
       default: false,
     },
     status: {
       type: String,
-      enum: ["Avaliable", "out of stock", "Discountinued"],
+      enum: ["Available", "Out of stock", "Discontinued"],
       required: true,
-      default: "Avaliable",
-    },
+      default: "Available",
+  }  
   },
   { timestamps: true }
 );
